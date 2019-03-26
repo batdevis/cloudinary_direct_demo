@@ -1,24 +1,11 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a simple demo of Cloudinary upload widget with Ruby on Rails.
 
-Things you may want to cover:
+It use both signed and unsigned upload.
 
-* Ruby version
+Links:
 
-* System dependencies
+* https://cloudinary.com/documentation/upload_widget
+* https://cloudinary.com/documentation/rails_integration
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
