@@ -1,19 +1,70 @@
 <!-- copied from https://cloudinary.com/documentation/upload_widget#quick_example -->
+
+<h4>unSigned</h4>
+
 <button id="upload_widget" class="cloudinary-button">Upload files</button>
 
+<pre id="result"></pre>
 <script src="https://widget.cloudinary.com/v2.0/global/all.js" type="text/javascript"></script>  
 
 <script type="text/javascript">  
+
 var myWidget = cloudinary.createUploadWidget({
     cloudName: '<%= Cloudinary.config.cloud_name %>', 
     uploadPreset: '<%= ENV.fetch('CLOUDINARY_PRESET_NAME') %>'
   }, (error, result) => { 
     if (!error && result && result.event === "success") { 
-      console.log('Done! Here is the image info: ', result.info); 
+      console.log('Done! Here is the unsigned image info: ', result.info); 
+      document.getElementById("result").innerText = JSON.stringify(result);
     }
   });
 
 document.getElementById("upload_widget").addEventListener("click", function(){
     myWidget.open();
+  }, false);
+</script>
+
+<hr />
+
+<h4>Signed</h4>
+
+<button id="upload_widget_signed" class="cloudinary-button">Upload files</button>
+
+<pre id="result_signed"></pre>
+
+
+<script type="text/javascript">
+
+/*
+got error:
+
+{
+    "error":{
+        "message":"Invalid Signature 307ea7506e6ced6a834a41e8fa1907911764b3a3. String to sign - 'folder=boat&source=uw&timestamp=1553619840'."
+    }
+}
+*/
+
+<% params_to_sign = {folder: ENV.fetch('CLOUDINARY_FOLDER'), source: "uw"} %>
+<% sign_request = Cloudinary::Utils.sign_request(params_to_sign) %>
+var uploadSignature = '<%= sign_request[:signature] %>';
+var uploadSignatureTimestamp = '<%= sign_request[:timestamp] %>';
+
+var myWidgetSigned = cloudinary.createUploadWidget({
+    cloudName: '<%= Cloudinary.config.cloud_name %>',
+    apiKey: '<%= Cloudinary.config.api_key %>',
+    multiple: false,
+    folder: '<%= ENV.fetch('CLOUDINARY_FOLDER') %>',
+    uploadSignatureTimestamp: uploadSignatureTimestamp,
+    uploadSignature: uploadSignature
+  }, (error, result) => { 
+    if (!error && result && result.event === "success") { 
+      console.log('Done! Here is the signed image info: ', result.info); 
+      document.getElementById("result_signed").innerText = JSON.stringify(result);
+    }
+  });
+
+document.getElementById("upload_widget_signed").addEventListener("click", function(){
+    myWidgetSigned.open();
   }, false);
 </script>
